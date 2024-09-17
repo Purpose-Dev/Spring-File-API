@@ -15,6 +15,26 @@ import java.util.List;
 @ControllerAdvice
 public class FileApiExceptionAdvice {
 
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<Object> handleFileNotFoundException(FileNotFoundException exception) {
+        List<String> details = new ArrayList<>();
+        details.add(exception.getMessage());
+        Error error = new Error(LocalDateTime.now(), "File Not Found", details);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<Object> handleFileStorageException(FileStorageException exception) {
+        List<String> details = new ArrayList<>();
+        details.add(exception.getMessage());
+        Error error = new Error(LocalDateTime.now(), "File Storage Error", details);
+
+        return ResponseEntity.status(HttpStatus.INSUFFICIENT_STORAGE)
+                .body(error);
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Object> handleMaxSizeException(MaxUploadSizeExceededException exception) {
         List<String> details = new ArrayList<>();
@@ -24,4 +44,6 @@ public class FileApiExceptionAdvice {
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
                 .body(error);
     }
+
+
 }
